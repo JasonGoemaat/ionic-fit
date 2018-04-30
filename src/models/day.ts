@@ -45,6 +45,12 @@ export const NutritionTypeNames = {
 }
 
 export class NutritionElement {
+    constructor(obj: any) {
+        if (obj != null) {
+            Object.assign(this, obj);
+        }
+    }
+
     type: NutritionTypes;
     value: number;
 }
@@ -58,20 +64,22 @@ export class DayConfig {
     lowTargets: NutritionElement[];
 }
 
-export const enum FitItemType {
+export enum FitItemType {
     meal = 'Meal',
     exercise = 'Exercise'
 }
 
 export class FitItem {
     /** name for display */
-    display: string;
+    name: string;
     /** hour of the day */
     hour: number;
     /** minute in the hour */
     minute: number;
     /** type */
     type: FitItemType;
+    /** complete?  false for meals before you add ingredients so you can enter a meal and set up the nutrition later */
+    complete: boolean;
 }
 
 export enum WeightUnit {
@@ -82,6 +90,16 @@ export enum WeightUnit {
 
 
 export class Ingredient {
+    constructor(obj: any) {
+        if (obj != null) {
+            Object.assign(this, obj);
+            if (this.nutrition != null) {
+                this.nutrition = this.nutrition.map(x => new NutritionElement(x))
+            }
+        }
+        if (this.nutrition == null) this.nutrition = [];
+    }
+
     /** name for display */
     name: string;
     /** true for favorite, shows up early in list */
@@ -91,26 +109,61 @@ export class Ingredient {
     /** nutrition elements set */
     nutrition: NutritionElement[];
     /** weight */
-    weight: number;
+    servingWeight: number;
     /** unit of weight */
-    weightUnit: number;
+    servingWeightUnit: WeightUnit;
+    /** normal servings per container */
+    servingCount: number;
+}
+
+export class MealIngredient extends Ingredient {
+    constructor(obj: any) {
+        super(obj);
+    }
+
+    weight: number;
+    weightUnit: WeightUnit;
+
+    /**
+     * Calculate ingredient nutrition based on quantity.  'oz' and 'g' can
+     * be calculated between each other.  If 'serving' is specified for 
+     * the ingredient, then only 'serving' is allowed for this record
+     * and the conversion
+     */
+    calculateNutrition() {
+
+    }
 }
 
 /**
  * 
  */
-export class Meal {
-    name: string;
-    favorite: boolean;
-    lastUsed: number;
+export class Meal extends FitItem {
+    constructor(obj: any = null) {
+        super();
+
+        if (obj != null) {
+            Object.assign(this, obj);
+            if (this.ingredients != null) {
+                this.ingredients = this.ingredients.map(x => new Ingredient(x));
+            }
+        }
+        if (this.ingredients == null) this.ingredients = [];
+    }
+
     ingredients: Ingredient[] = [];
 }
 
-export class Exercise {
-    name: string;
+export class Exercise extends FitItem {
+    constructor(obj: any = null) {
+        super();
+
+        if (obj != null) {
+            Object.assign(this, obj);
+        }
+    }
+
     favorite: boolean;
-    lastUsed: number;
-    calories: number;
 }
 
 export class Day {

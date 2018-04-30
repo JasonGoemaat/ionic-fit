@@ -6,33 +6,52 @@
 -->
 <ion-header>
 
-  <ion-navbar>
-    <button ion-button icon-only menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>{{title}}</ion-title>
-    <ion-buttons end>
-      <button ion-button>
-        <ion-icon name="menu">&gt;</ion-icon>
-      </button>
-    </ion-buttons>
-  </ion-navbar>
-
   <ion-toolbar>
     <button ion-button icon-only menuToggle>
       <ion-icon name="arrow-dropleft"></ion-icon>
     </button>
-    <ion-title>{{title}}</ion-title>
+    <ion-title>
+      <div>{{title}}</div>
+    </ion-title>
     <button ion-button icon-only menuToggle end>
       <ion-icon name="arrow-dropright"></ion-icon>
     </button>
   </ion-toolbar>
-
 </ion-header>
 
 
 <ion-content padding>
-  <button ion-button (click)="addIngredient()">
+  <button ion-button round icon-start small (click)="addMeal()">
+    <ion-icon name="add"></ion-icon>
+    Meal
+  </button>
+  <button ion-button round icon-start small (click)="addExercise()">
+    <ion-icon name="add"></ion-icon>
+    Exercise
+  </button>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let item of day.items">
+      <ion-item>
+        <!-- try 'pulse', 'heart'-->
+        <ion-icon style="width: 30px" *ngIf="item.type === types.exercise" name="pulse"></ion-icon>
+        <!-- try 'restaurant', 'nutrition' -->
+        <ion-icon style="width: 30px" *ngIf="item.type === types.meal" name="restaurant"></ion-icon>
+        <ion-icon *ngIf="item.complete !== true" name="alert" style="color: red"></ion-icon>
+        {{getItemDisplay(item)}}
+      </ion-item>
+      <ion-item-options>
+        <button ion-button icon-only (click)="editItem(item)" color="light">
+          <ion-icon name="create"></ion-icon>
+        </button>
+        <button ion-button icon-only (click)="deleteItem(item)" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <!-- <button ion-button (click)="addIngredient()">
     Add Ingredient
   </button>
   <ion-list>
@@ -47,5 +66,5 @@
         </button>
       </ion-item-options>
     </ion-item-sliding>
-  </ion-list>
+  </ion-list> -->
 </ion-content>

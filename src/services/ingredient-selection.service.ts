@@ -12,7 +12,7 @@ export class IngredientSelectionService {
     current: Observable<any>;
     subscriber: Subscriber<any>;
 
-    selectIngredient(ingredient: any) : Observable<any> {
+    selectIngredient(ingredient: any = null) : Observable<any> {
         this.current = new Observable<any>(subscriber => {
             this.subscriber = subscriber;
         });
